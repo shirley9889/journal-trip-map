@@ -1,0 +1,17 @@
+{
+  "name": "journal-trip-map",
+  "description": "把任意行程、路书、差旅安排做成「英文竖版、手机友好」的手帐风单页 HTML 地图。触发词：手帐地图、竖版地图、英文版地图、行程可视化、journal map、itinerary map。产出为自包含 HTML（内联 CSS + 内联 SVG）。",
+  "description_en": "Turn any itinerary, route plan or business-trip schedule into a portrait, mobile-friendly, hand-lettered journal-style single-page HTML map. Trigger phrases: journal map, itinerary map, portrait trip map, vertical travel map. Output is a self-contained HTML file (inline CSS + inline SVG).",
+  "author": {
+    "name": "",
+    "email": ""
+  },
+  "license": "MIT",
+  "keywords": [
+    "itinerary",
+    "map",
+    "journal",
+    "travel",
+    "html"
+  ]
+}
