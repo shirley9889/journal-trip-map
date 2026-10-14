@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>西藏环线手帐地图 · 10日</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ece1c6; --card:#fffdf4; --ink:#4a3b2f; --ink-soft:rgba(74,59,47,.72);
+    --red:#e2574c; --gold:#e8b64c; --green:#6fa06a; --blue:#5b8fb9; --plum:#a06a9a;
+    --mapbg:#d9e7ef; --line:#8a5a44;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:'Patrick Hand','Comic Sans MS','PingFang SC','Microsoft YaHei',sans-serif;
+    padding:16px 12px 30px; -webkit-text-size-adjust:100%;
+  }
+  .page{max-width:470px;margin:0 auto;}
+
+  .card{
+    position:relative; background:var(--card); border:2px solid var(--ink);
+    border-radius:18px 225px 18px 255px / 255px 18px 225px 18px;
+    box-shadow:3px 4px 0 rgba(74,59,47,.18);
+    padding:16px 15px 13px; margin-top:18px;
+  }
+  .card.alt{border-radius:225px 18px 255px 18px / 18px 255px 18px 225px;}
+  .tape{position:absolute;top:-10px;width:72px;height:20px;border-radius:3px;border:1px dashed rgba(74,59,47,.35);opacity:.85;}
+  .tape.gold{left:22px;background:rgba(232,182,76,.5);transform:rotate(-4deg);}
+  .tape.blue{right:26px;background:rgba(91,143,185,.4);transform:rotate(3deg);}
+  .tape.plum{left:34px;background:rgba(160,106,154,.38);transform:rotate(-2deg);}
+
+  h1{font-family:'Caveat','PingFang SC',cursive;font-size:36px;line-height:1.05;font-weight:700;}
+  h1 .day{color:var(--red);}
+  .sub{font-size:15.5px;margin-top:4px;}
+  .route-line{font-size:13.5px;color:var(--ink-soft);margin-top:2px;}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+  .tag{border:1.5px solid var(--ink);border-radius:999px;padding:2px 12px;font-size:13px;font-weight:bold;}
+  .tag.blue{background:#dcebf5;} .tag.red{background:#f9ddd9;} .tag.green{background:#e7f0e4;}
+
+  h2{font-family:'Caveat','PingFang SC',cursive;font-size:28px;font-weight:700;margin-bottom:8px;}
+  h2 small{font-family:'Patrick Hand','PingFang SC',sans-serif;font-size:13.5px;font-weight:400;color:var(--ink-soft);}
+
+  .map-card{padding:8px 8px 6px;}
+  .map-card svg{display:block;width:100%;height:auto;border-radius:14px;font-family:'Patrick Hand','Comic Sans MS','PingFang SC','Microsoft YaHei',sans-serif;}
+
+  /* 海拔策略 */
+  .alt-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .alt-box{border:1.5px solid var(--ink);border-radius:12px;padding:8px 10px 7px;}
+  .alt-box .a-name{font-family:'Caveat','PingFang SC',cursive;font-weight:700;font-size:20px;line-height:1.1;}
+  .alt-box .a-alt{font-size:12.5px;font-weight:bold;color:var(--ink-soft);}
+  .alt-box p{font-size:12.5px;line-height:1.3;margin-top:3px;}
+  .alt-box.low{background:#e7f0e4;} .alt-box.peak{background:#f9ddd9;}
+  .alt-box.drop{background:#e3edf6;} .alt-box.out{background:#faf0d8;}
+
+  /* 每日卡片 */
+  .day{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1.5px dashed rgba(74,59,47,.28);}
+  .day:last-child{border-bottom:none;padding-bottom:2px;}
+  .dchip{
+    flex:0 0 42px;text-align:center;border:1.5px solid var(--ink);border-radius:9px;
+    font-family:'Caveat','PingFang SC',cursive;font-weight:700;color:#fff;padding:2px 0 3px;line-height:1.05;
+  }
+  .dchip .dd{display:block;font-size:19px;}
+  .dchip .dj{display:block;font-size:10.5px;font-weight:400;font-family:'Patrick Hand','PingFang SC',sans-serif;}
+  .d0{background:var(--red);} .d1{background:var(--gold);color:#4a3b2f!important;}
+  .d2{background:var(--green);} .d3{background:var(--blue);}
+  .d4{background:var(--plum);} .d5{background:var(--red);}
+  .d6{background:var(--gold);color:#4a3b2f!important;} .d7{background:var(--green);}
+  .d8{background:var(--blue);} .d9{background:var(--plum);}
+  .day b{font-size:16.5px;font-weight:normal;display:block;}
+  .day .meta{display:flex;gap:6px;flex-wrap:wrap;margin:3px 0 2px;}
+  .badge{display:inline-block;font-size:12px;font-weight:bold;background:#f4ead3;border:1.5px solid var(--ink);border-radius:999px;padding:0 9px;}
+  .badge.alt{background:#e3edf6;}
+  .note{font-size:13px;color:var(--ink-soft);line-height:1.35;}
+  .warn{color:#b3472f;}
+
+  .legend{display:flex;flex-wrap:wrap;gap:8px;}
+  .lg{font-size:13px;border:1.5px dashed var(--ink);border-radius:999px;padding:2px 11px;background:var(--card);}
+  .dashline{display:inline-block;width:26px;height:0;vertical-align:middle;border-top:2.5px dashed var(--line);margin-right:4px;}
+
+  .foot{
+    margin-top:18px;background:#3f352b;color:#f3ead6;border:2px solid var(--ink);
+    border-radius:14px;text-align:center;font-size:13px;line-height:1.65;padding:10px 8px;
+  }
+  .tbc{font-size:12px;color:var(--ink-soft);margin-top:8px;line-height:1.45;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ================= 页眉 ================= -->
+  <header class="card alt">
+    <span class="tape gold"></span>
+    <h1>🏔️ 西藏环线 · <span class="day">10 日</span></h1>
+    <p class="sub">10 天环线 · 上海 → 成都 → 林芝 → 波密 → 拉萨</p>
+    <p class="route-line">低进 · 一晚高 · 低出 —— 抗高反动线</p>
+    <div class="tags">
+      <span class="tag blue">落地 2949m</span>
+      <span class="tag red">4200m 只住一晚</span>
+      <span class="tag green">2725m 连住三晚</span>
+    </div>
+  </header>
+
+  <!-- ================= 地图 ================= -->
+  <section class="card map-card">
+    <span class="tape plum"></span>
+    <svg viewBox="0 0 400 724" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="西藏十日环线示意：上海飞成都再飞林芝，专车经鲁朗到波密，支线到来古冰川、休整寺、嘎朗湖，后至百巴巴松措，动车进拉萨，市区朝圣一日，羊湖环线后从贡嘎机场返程上海。">
+      <defs>
+        <filter id="ds" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="2" stdDeviation="1.6" flood-color="#4a3b2f" flood-opacity="0.25"/>
+        </filter>
+      </defs>
+
+      <!-- 底图 -->
+      <rect x="4" y="4" width="392" height="716" rx="18" fill="#d9e7ef" stroke="#4a3b2f" stroke-width="2"/>
+      <path d="M 4 300 C 120 290, 260 315, 396 300" stroke="#c3d7e2" stroke-width="10" fill="none"/>
+      <path d="M 200 60 C 196 220, 204 480, 200 660" stroke="#c3d7e2" stroke-width="9" fill="none" opacity="0.65"/>
+      <g fill="#ffffff" opacity="0.95">
+        <ellipse cx="46" cy="130" rx="20" ry="8"/><ellipse cx="62" cy="126" rx="12" ry="6"/>
+        <ellipse cx="352" cy="180" rx="17" ry="7"/>
+      </g>
+
+      <!-- 题签 + 指南针 -->
+      <g transform="translate(14,12) rotate(-0.5)">
+        <rect width="118" height="42" rx="9" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="20" font-size="16.5" font-weight="700" fill="#4a3b2f">西藏环线</text>
+        <text x="12" y="36" font-size="11" fill="#4a3b2f" opacity="0.75">10日 · 示意不按比例</text>
+      </g>
+      <g transform="translate(348,30)">
+        <circle r="13" fill="#fffdf4" stroke="#4a3b2f" stroke-width="1.6"/>
+        <path d="M 0 -7.5 L 4 6.5 L 0 3.5 L -4 6.5 Z" fill="#e2574c"/>
+        <text y="-17" text-anchor="middle" font-size="11" font-weight="700" fill="#4a3b2f">北</text>
+      </g>
+
+      <!-- 主线：上海 → 成都 → 林芝（顶部横排） -->
+      <g stroke="#8a5a44" stroke-width="2.3" stroke-dasharray="7 6" fill="none" stroke-linecap="round">
+        <path d="M 76 128 C 110 124, 130 124, 164 128"/>
+        <path d="M 236 128 C 270 124, 290 124, 322 128"/>
+        <!-- 林芝 → 鲁朗 → 波密（主线纵贯） -->
+        <path d="M 200 152 C 200 168, 200 186, 200 206"/>
+        <path d="M 200 244 C 200 258, 200 268, 200 282"/>
+        <!-- 支线：波密 → 来古 -->
+        <path d="M 246 286 C 280 270, 308 236, 326 210"/>
+        <!-- 支线：波密 → 休整寺 -->
+        <path d="M 154 296 C 120 296, 92 292, 70 288"/>
+        <!-- 支线：波密 → 嘎朗湖 -->
+        <path d="M 154 316 C 120 330, 92 342, 72 350"/>
+        <!-- 主线：波密 → 扎西岗 → 百巴 -->
+        <path d="M 200 336 C 200 356, 200 372, 200 388"/>
+        <path d="M 200 428 C 200 442, 200 450, 200 462"/>
+        <!-- 百巴 → 林芝站 → 拉萨 -->
+        <path d="M 236 440 C 268 420, 292 396, 312 374"/>
+        <path d="M 314 398 C 300 440, 260 500, 224 540"/>
+        <!-- 拉萨 → 市区聚点 -->
+        <path d="M 200 586 C 190 592, 160 594, 120 596"/>
+        <!-- 拉萨 → 羊湖 -->
+        <path d="M 168 588 C 130 606, 100 632, 78 668"/>
+        <!-- 拉萨 → 贡嘎 → 出画 -->
+        <path d="M 236 588 C 280 610, 302 626, 316 646"/>
+      </g>
+
+      <!-- 里程气泡 -->
+      <g font-size="11.5" font-weight="700" text-anchor="middle" fill="#4a3b2f">
+        <rect x="86" y="86" width="120" height="22" rx="11" fill="#fffdf4" stroke="#4a3b2f" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="146" y="101">✈️ 转机飞林芝</text>
+
+        <rect x="100" y="170" width="120" height="22" rx="11" fill="#fffdf4" stroke="#4a3b2f" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="160" y="185">专车 5h · 经鲁朗</text>
+
+        <rect x="246" y="222" width="82" height="22" rx="11" fill="#fffdf4" stroke="#4a3b2f" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="287" y="237">3.5h · 来古</text>
+
+        <rect x="70" y="226" width="82" height="22" rx="11" fill="#fffdf4" stroke="#4a3b2f" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="111" y="241">4h 往返</text>
+
+        <rect x="222" y="392" width="82" height="22" rx="11" fill="#fffdf4" stroke="#4a3b2f" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="263" y="407">🚄 3h53min</text>
+      </g>
+
+      <!-- ===== 节点 ===== -->
+
+      <!-- 上海 -->
+      <g transform="translate(28,108)">
+        <rect width="96" height="40" rx="10" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="17" font-size="13" font-weight="700" fill="#4a3b2f">上海</text>
+        <text x="12" y="31" font-size="10" fill="#8a5a44">出发 · D0</text>
+      </g>
+
+      <!-- 成都 -->
+      <g transform="translate(140,108)">
+        <rect width="96" height="40" rx="10" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="17" font-size="13" font-weight="700" fill="#4a3b2f">成都天府</text>
+        <text x="12" y="31" font-size="10" fill="#8a5a44">中转 · D0</text>
+      </g>
+
+      <!-- 林芝 -->
+      <g transform="translate(256,100) rotate(-1)">
+        <rect width="124" height="52" rx="10" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="18" font-size="13" font-weight="700" fill="#4a3b2f">林芝米林 ✈️</text>
+        <text x="12" y="32" font-size="10" fill="#4a3b2f">落地 2949m · 软启动</text>
+        <text x="12" y="45" font-size="9.5" fill="#8a5a44">D1 · 专车接机</text>
+      </g>
+
+      <!-- 来古（北支线） -->
+      <g transform="translate(262,164) rotate(1)">
+        <rect width="122" height="48" rx="10" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="18" font-size="13" font-weight="700" fill="#4a3b2f">来古冰川 ⛰️</text>
+        <text x="12" y="32" font-size="10" fill="#4a3b2f">4200m · D2 住一晚</text>
+        <text x="12" y="44" font-size="9.5" fill="#8a5a44">观光车观景 · 不长徒</text>
+      </g>
+
+      <!-- 波密（主线基地） -->
+      <g transform="translate(104,272) rotate(-1)">
+        <rect width="192" height="58" rx="11" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="20" font-size="14" font-weight="700" fill="#4a3b2f">波密 🏔️ 2725m</text>
+        <text x="12" y="35" font-size="10" fill="#4a3b2f">松赞山居 · 基地 D1 / D3 / D4</text>
+        <text x="12" y="49" font-size="9.5" fill="#8a5a44">高夜之后的修复大本营</text>
+      </g>
+
+      <!-- 休整寺（左支线） -->
+      <g transform="translate(16,258)">
+        <circle cx="26" cy="14" r="5" fill="#5b8fb9" stroke="#4a3b2f" stroke-width="1.5"/>
+        <text x="36" y="13" font-size="11.5" font-weight="700" fill="#4a3b2f">休整寺</text>
+        <text x="36" y="26" font-size="9.5" fill="#8a5a44">D3 转经</text>
+      </g>
+
+      <!-- 嘎朗湖 / 岗云杉林（左支线） -->
+      <g transform="translate(16,336)">
+        <circle cx="26" cy="14" r="5" fill="#a06a9a" stroke="#4a3b2f" stroke-width="1.5"/>
+        <text x="36" y="13" font-size="11.5" font-weight="700" fill="#4a3b2f">嘎朗湖</text>
+        <text x="36" y="26" font-size="9.5" fill="#8a5a44">D4 环湖漫步</text>
+      </g>
+
+      <!-- 扎西岗村 -->
+      <g transform="translate(148,352)">
+        <circle cx="10" cy="14" r="5" fill="#e2574c" stroke="#4a3b2f" stroke-width="1.5"/>
+        <text x="22" y="13" font-size="11.5" font-weight="700" fill="#4a3b2f">扎西岗村</text>
+        <text x="22" y="26" font-size="9.5" fill="#8a5a44">D5 途经闲逛</text>
+      </g>
+
+      <!-- 百巴 · 巴松措 -->
+      <g transform="translate(96,414) rotate(-1)">
+        <rect width="208" height="56" rx="10" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="20" font-size="14" font-weight="700" fill="#4a3b2f">百巴 · 巴松措 🏔️</text>
+        <text x="12" y="35" font-size="10" fill="#4a3b2f">3200m · D5 · 营地汤锅晚餐</text>
+        <text x="12" y="49" font-size="9.5" fill="#8a5a44">早抵达 · 湖边营地</text>
+      </g>
+
+      <!-- 林芝站 -->
+      <g transform="translate(258,336) rotate(1)">
+        <rect width="112" height="40" rx="10" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="17" font-size="12.5" font-weight="700" fill="#4a3b2f">林芝站 🚄</text>
+        <text x="12" y="31" font-size="9.5" fill="#8a5a44">D6 · 动车进拉萨</text>
+      </g>
+
+      <!-- 拉萨（主线基地） -->
+      <g transform="translate(96,528) rotate(-1)">
+        <rect width="208" height="58" rx="11" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="20" font-size="14" font-weight="700" fill="#4a3b2f">拉萨 🏨 瑞吉</text>
+        <text x="12" y="35" font-size="10" fill="#4a3b2f">基地 D6 / D7 · 连住两晚</text>
+        <text x="12" y="49" font-size="9.5" fill="#8a5a44">全程客房供氧</text>
+      </g>
+
+      <!-- 拉萨市区聚点 -->
+      <g transform="translate(24,592) rotate(0.5)">
+        <rect width="216" height="64" rx="12" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="13" y="19" font-size="12.5" font-weight="700" fill="#4a3b2f">🚕 D7 市区一日 · 全程平路</text>
+        <text x="13" y="35" font-size="10.5" fill="#4a3b2f">布达拉宫 · 10:20–10:40 定点休息</text>
+        <text x="13" y="50" font-size="10.5" fill="#4a3b2f">大昭寺 · 八廓街甜茶馆</text>
+        <text x="13" y="61" font-size="10.5" fill="#4a3b2f">扎基寺 · 傍晚祈福</text>
+      </g>
+
+      <!-- 羊湖（左支线） -->
+      <g transform="translate(14,662) rotate(-1)">
+        <rect width="124" height="44" rx="10" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="17" font-size="12.5" font-weight="700" fill="#4a3b2f">羊湖 ⛰️</text>
+        <text x="12" y="31" font-size="10" fill="#4a3b2f">4441m · D8 环湖 3h</text>
+        <text x="12" y="41" font-size="9.5" fill="#8a5a44">只看平地观景台</text>
+      </g>
+
+      <!-- 贡嘎机场 -->
+      <g transform="translate(252,640) rotate(1)">
+        <rect width="136" height="50" rx="10" fill="#fffdf4" stroke="#4a3b2f" stroke-width="2" filter="url(#ds)"/>
+        <text x="12" y="18" font-size="12.5" font-weight="700" fill="#4a3b2f">贡嘎T3 ✈️</text>
+        <text x="12" y="32" font-size="10" fill="#4a3b2f">D9 · 返程航班</text>
+        <text x="12" y="45" font-size="9.5" fill="#8a5a44">→ 上海 · 傍晚抵达</text>
+      </g>
+
+      <!-- ===== 日编号钉 ===== -->
+      <g font-size="11" font-weight="700" text-anchor="middle">
+        <circle cx="24" cy="104" r="9" fill="#e2574c" stroke="#4a3b2f" stroke-width="1.5"/><text x="24" y="108" fill="#fff">0</text>
+        <circle cx="252" cy="96" r="9" fill="#e8b64c" stroke="#4a3b2f" stroke-width="1.5"/><text x="252" y="100" fill="#4a3b2f">1</text>
+        <circle cx="256" cy="160" r="9" fill="#6fa06a" stroke="#4a3b2f" stroke-width="1.5"/><text x="256" y="164" fill="#fff">2</text>
+        <circle cx="10" cy="254" r="9" fill="#5b8fb9" stroke="#4a3b2f" stroke-width="1.5"/><text x="10" y="258" fill="#fff">3</text>
+        <circle cx="10" cy="332" r="9" fill="#a06a9a" stroke="#4a3b2f" stroke-width="1.5"/><text x="10" y="336" fill="#fff">4</text>
+        <circle cx="92" cy="410" r="9" fill="#e2574c" stroke="#4a3b2f" stroke-width="1.5"/><text x="92" y="414" fill="#fff">5</text>
+        <circle cx="252" cy="332" r="9" fill="#e8b64c" stroke="#4a3b2f" stroke-width="1.5"/><text x="252" y="336" fill="#4a3b2f">6</text>
+        <circle cx="92" cy="524" r="9" fill="#6fa06a" stroke="#4a3b2f" stroke-width="1.5"/><text x="92" y="528" fill="#fff">7</text>
+        <circle cx="10" cy="658" r="9" fill="#5b8fb9" stroke="#4a3b2f" stroke-width="1.5"/><text x="10" y="662" fill="#fff">8</text>
+        <circle cx="246" cy="636" r="9" fill="#a06a9a" stroke="#4a3b2f" stroke-width="1.5"/><text x="246" y="640" fill="#fff">9</text>
+      </g>
+    </svg>
+  </section>
+
+  <!-- ================= 海拔策略 ================= -->
+  <section class="card">
+    <span class="tape blue"></span>
+    <h2>🧭 海拔策略 <small>· 为什么这样安排</small></h2>
+    <div class="alt-grid">
+      <div class="alt-box low"><span class="a-name">低进</span> <span class="a-alt">2949m</span>
+        <p>飞林芝落地，不直飞拉萨，身体软启动（D1）。</p></div>
+      <div class="alt-box peak"><span class="a-name">峰值</span> <span class="a-alt">4200m</span>
+        <p>来古冰川只住一晚，看完就走（D2）。</p></div>
+      <div class="alt-box drop"><span class="a-name">下撤</span> <span class="a-alt">2725m</span>
+        <p>当日回波密连住三晚，修复缓冲（D3–D5）。</p></div>
+      <div class="alt-box out"><span class="a-name">缓出</span> <span class="a-alt">3650m*</span>
+        <p>缓升 3200m 后，拉萨住两晚再飞走（D6–D9）。</p></div>
+    </div>
+  </section>
+
+  <!-- ================= 每日卡片 ================= -->
+  <section class="card alt">
+    <span class="tape gold"></span>
+    <h2>📌 每日安排 <small>· 编号与地图圆钉对应</small></h2>
+
+    <div class="day">
+      <span class="dchip d0"><span class="dd">0</span><span class="dj">出发</span></span>
+      <div><b>飞成都</b>
+        <div class="meta"><span class="badge">✈️ 傍晚航班</span><span class="badge">浦东 → 成都天府</span></div>
+        <p class="note">宿机场附近酒店。次日上午飞林芝米林，落地即专车进山。</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <span class="dchip d1"><span class="dd">1</span><span class="dj">进山</span></span>
+      <div><b>低飞林芝 · 进波密</b>
+        <div class="meta"><span class="badge">🚗 专车 5h</span><span class="badge alt">🏔️ 2725m</span></div>
+        <p class="note">机场—鲁朗—波密；鲁朗合作餐厅午餐，沿途林海观景，傍晚抵波入住松赞。</p>
+        <p class="note warn">⚠️ 落地仅 2949m：分段停车吸氧、不洗头洗澡、客房开供氧。</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <span class="dchip d2"><span class="dd">2</span><span class="dj">高夜</span></span>
+      <div><b>来古冰川 · 唯一高夜</b>
+        <div class="meta"><span class="badge">🚗 3.5h</span><span class="badge alt">⛰️ 4200m</span></div>
+        <p class="note">波密→来古；景区观光车平缓观冰川，不长线徒步。</p>
+        <p class="note warn">⚠️ 全程唯一 4200m 夜：先吸氧 40 分钟再出门、当晚禁澡、少量进食；备葡萄糖+便携氧。</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <span class="dchip d3"><span class="dd">3</span><span class="dj">下撤</span></span>
+      <div><b>下撤休整</b>
+        <div class="meta"><span class="badge">🚗 往返 4h</span><span class="badge alt">🏔️ 2725m</span></div>
+        <p class="note">来古→休整寺平路转经祈福，寺内简餐，午后返波密。</p>
+        <p class="note warn">⚠️ 当日下撤 2725m 缓解胸闷；零长途赶路，随时回房吸氧。</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <span class="dchip d4"><span class="dd">4</span><span class="dj">慢游</span></span>
+      <div><b>波密慢游</b>
+        <div class="meta"><span class="badge">🚗 短途 ≤1h</span><span class="badge alt">🏔️ 2725m</span></div>
+        <p class="note">嘎朗湖环湖漫步 / 岗云杉林徒步二选一 + 冈野野餐、酒店下午茶。</p>
+        <p class="note warn">⚠️ 牧场河谷风大，随身带厚披肩；沿途多次停靠休整。</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <span class="dchip d5"><span class="dd">5</span><span class="dj">湖区</span></span>
+      <div><b>波密 → 百巴</b>
+        <div class="meta"><span class="badge">🚗 4h</span><span class="badge alt">🏔️ 3200m</span></div>
+        <p class="note">途经扎西岗村平地闲逛；早抵巴松措，营地汤锅晚餐，宿松赞百巴山居。</p>
+        <p class="note warn">⚠️ 百巴供氧客房缓解乘车疲劳（此条原文排在 D4，已按行程归位）。</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <span class="dchip d6"><span class="dd">6</span><span class="dj">进城</span></span>
+      <div><b>动车进拉萨</b>
+        <div class="meta"><span class="badge">🚄 午间动车</span><span class="badge">约 4h + 打车接站</span></div>
+        <p class="note">宿：拉萨瑞吉 · 全程客房供氧。傍晚八廓街外围转经道，只走平路。</p>
+        <p class="note warn">⚠️ 提前 1h 到站、优先一等座；车上备温水+葡萄糖含片、缓慢吸氧；抵拉萨不剧烈走动，客房供氧。</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <span class="dchip d7"><span class="dd">7</span><span class="dj">朝圣</span></span>
+      <div><b>拉萨朝圣一日</b>
+        <div class="meta"><span class="badge">🚕 打车</span><span class="badge alt">🏨 瑞吉</span></div>
+        <p class="note">上午布达拉宫（私家讲解·分段平缓·10:20–10:40 定点休息）；午后大昭寺朝拜 + 八廓街甜茶馆；傍晚扎基寺祈福。</p>
+        <p class="note warn">⚠️ 布宫提前预约、全程少爬台阶；高原少喝咖啡浓茶；SPA 舒缓腰酸，21 点前入睡。</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <span class="dchip d8"><span class="dd">8</span><span class="dj">圣湖</span></span>
+      <div><b>羊湖环线</b>
+        <div class="meta"><span class="badge">🚗 专车往返约 3h</span><span class="badge alt">⛰️ 4441m</span></div>
+        <p class="note">羊卓雍措环湖观景，全部选平地观景台；午后返拉萨整理行李。专车原文标注「待包车」。</p>
+        <p class="note warn">⚠️ 昼夜温差大，带防风外套；全程慢节奏，预留候机时间，不赶航班。</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <span class="dchip d9"><span class="dd">9</span><span class="dj">回家</span></span>
+      <div><b>返程回家</b>
+        <div class="meta"><span class="badge">✈️ 午间航班</span><span class="badge">贡嘎 → 浦东</span></div>
+        <p class="note">上午从拉萨前往贡嘎机场返程上海，慢节奏收尾。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 图例 ================= -->
+  <section class="card">
+    <span class="tape plum"></span>
+    <h2>🔖 图例</h2>
+    <div class="legend">
+      <span class="lg">✈️ 航班</span>
+      <span class="lg">🚗 专车</span>
+      <span class="lg">🚄 动车</span>
+      <span class="lg">🏔️ 松赞住宿</span>
+      <span class="lg">🏨 瑞吉住宿</span>
+      <span class="lg">⛰️ 4000m 以上</span>
+      <span class="lg">① 日编号圆钉</span>
+      <span class="lg">⚠️ 高反提示</span>
+      <span class="lg"><span class="dashline"></span>路线（示意）</span>
+    </div>
+    <p class="tbc">海拔数据依行程单整理，仅供参考；实际以出行当日安排为准。</p>
+  </section>
+
+  <!-- ================= 页脚 ================= -->
+  <footer class="foot">
+    🏔️ 10 天 · 低进 · 一晚高 · 低出<br>
+    一张图看懂西藏环线怎么走<br>
+    由 journal-trip-map 手帐地图生成器制作
+  </footer>
+
+</div>
+</body>
+</html>
