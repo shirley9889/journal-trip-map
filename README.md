@@ -67,13 +67,32 @@ bash install.sh          # Windows 双击 install.bat
 
 ---
 
-## 四、包内结构
+## 四、效果示例
+
+一张真实的产出（10 天西藏环线，已脱敏：不含航班号、确认码、具体日期）：
+
+![封面](examples/xhs/00-cover.png)
+
+| 页 | 内容 |
+|---|---|
+| [01](examples/xhs/01.png) | 页眉 + 路线总览上段 |
+| [02](examples/xhs/02.png) | 路线下段 + 海拔策略 |
+| [03](examples/xhs/03.png) | 行程前半（逐日卡片） |
+| [04](examples/xhs/04.png) | 行程后半 |
+| [05](examples/xhs/05.png) | 收尾 + 图例 |
+
+源文件：[`examples/tibet-loop-sample.html`](examples/tibet-loop-sample.html)
+
+---
+
+## 五、包内结构
 
 ```
 journal-trip-map-plugin/
 ├── .codebuddy-plugin/plugin.json     # 插件清单（名称/描述/关键词）
 ├── install.sh / install.bat          # 一键安装脚本
 ├── README.md                         # 本文件
+├── examples/                         # 成品示例（脱敏）+ 小红书配图
 └── skills/journal-trip-map/
     ├── SKILL.md                      # Skill 定义：触发条件、流程、版式规范、自检清单
     ├── templates/journal-map-portrait.html   # 通用竖版画版（80 个占位符）
@@ -82,7 +101,7 @@ journal-trip-map-plugin/
 
 ---
 
-## 五、使用要点
+## 六、使用要点
 
 - **不编造数据**：原始行程里没有的距离、时长、地点，一律留占位，并列出「待确认清单」
 - **语言跟随你**：你用中文，输出就全中文；需要英文版时说一声
@@ -91,11 +110,11 @@ journal-trip-map-plugin/
 
 ---
 
-## 六、卸载 / 更新
+## 七、卸载 / 更新
 
 - **卸载**：删除 `~/.codebuddy/skills/journal-trip-map/` 目录
 - **更新**：重新运行安装脚本即可（旧版本会自动备份）
 
-## 七、许可
+## 八、许可
 
 MIT。可自由分发、修改、内部使用。
